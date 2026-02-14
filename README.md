@@ -4,10 +4,6 @@ NovaCrypto - Professional Multi-Chain Wallet
 
 # NovaCrypto - Professional Multi-Chain Wallet
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Node](https://img.shields.io/badge/node-20.x-brightgreen)
-
 A professional, self-custodial cryptocurrency wallet supporting Ethereum and Solana with real blockchain interaction via GetBlock.io.
 
 ## ✨ Features
