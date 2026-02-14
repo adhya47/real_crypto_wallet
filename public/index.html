@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NovaCrypto • Professional Wallet</title>
+    <style>
+      /* ===== MODERN CSS RESET ===== */
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* ===== PROFESSIONAL COLOR PALETTE ===== */
+
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-light: #3b82f6;
+        --secondary: #7c3aed;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --dark: #0f172a;
+        --dark-light: #1e293b;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --gray-light: #e2e8f0;
+        --ethereum: #627eea;
+        --bitcoin: #f7931a;
+        --solana: #14f195;
+        --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        --card-bg: rgba(255, 255, 255, 0.05);
+        --card-border: 1px solid rgba(255, 255, 255, 0.1);
+        --card-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.5);
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: var(--bg-gradient);
+        color: var(--light);
+        min-height: 100vh;
+        padding: 2rem;
+        position: relative;
+      }
+      /* Glass morphism background effect */
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="%232563eb" stroke-width="0.5" stroke-opacity="0.1"/><circle cx="100" cy="100" r="120" fill="none" stroke="%237c3aed" stroke-width="0.5" stroke-opacity="0.1"/></svg>')
+          center/cover;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      /* ===== HEADER SECTION ===== */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        transform: rotate(45deg);
+      }
+
+      .logo-icon span {
+        transform: rotate(-45deg);
+      }
+
+      .logo-text h1 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--light), var(--gray-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-text p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .network-badge {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: var(--card-border);
+        border-radius: 100px;
+        padding: 0.5rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .network-indicator {
+        width: 10px;
+        height: 10px;
+        background: var(--success);
+        border-radius: 50%;
+        box-shadow: 0 0 20px var(--success);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .network-badge span {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--light);
+      }
+      /* ===== STATUS CARD ===== */
+
+      .status-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: var(--card-border);
+        border-radius: 24px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--card-shadow);
+      }
+
+      .status-grid {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .status-item {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .status-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+      }
+
+      .status-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--light);
+      }
+      /* ===== ACTION GRID ===== */
+
+      .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .action-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: var(--card-border);
+        border-radius: 24px;
+        padding: 1.75rem;
+        transition: all 0.3s ease;
+        box-shadow: var(--card-shadow);
+      }
+
+      .action-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--primary-light);
+      }
+
+      .action-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .action-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+
+      .action-title h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--light);
+      }
+
+      .action-title p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+      /* ===== FORM ELEMENTS ===== */
+
+      .input-group {
+        margin-bottom: 1rem;
+      }
+
+      .input-group label {
+        display: block;
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .input-group input,
+      .input-group textarea {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        color: var(--light);
+        font-family: "Inter", monospace;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .input-group input:focus,
+      .input-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      }
+
+      .input-group input::placeholder,
+      .input-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+
+      .mnemonic-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        font-family: "Monaco", "Menlo", monospace;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--primary-light);
+        margin: 1rem 0;
+        word-break: break-all;
+      }
+
+      .warning-message {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid var(--warning);
+        padding: 1rem;
+        border-radius: 12px;
+        color: #fbbf24;
+        font-size: 0.95rem;
+        margin: 1rem 0;
+      }
+      /* ===== WALLET CARDS ===== */
+
+      .wallet-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .wallet-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: var(--card-border);
+        border-radius: 24px;
+        padding: 1.75rem;
+        transition: all 0.3s ease;
+      }
+
+      .wallet-card.ethereum {
+        border-top: 4px solid var(--ethereum);
+      }
+
+      .wallet-card.solana {
+        border-top: 4px solid var(--solana);
+      }
+
+      .wallet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .wallet-name {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .wallet-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .wallet-icon.ethereum {
+        background: rgba(98, 126, 234, 0.2);
+        color: var(--ethereum);
+      }
+
+      .wallet-icon.solana {
+        background: rgba(20, 241, 149, 0.2);
+        color: var(--solana);
+      }
+
+      .wallet-address {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-family: "Monaco", monospace;
+        font-size: 0.85rem;
+        color: var(--gray);
+        margin-bottom: 1rem;
+        word-break: break-all;
+      }
+
+      .wallet-balance {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--light);
+        margin: 1rem 0;
+      }
+
+      .wallet-usd {
+        color: var(--gray);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      /* ===== BUTTONS ===== */
+
+      .btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.6s,
+          height 0.6s;
+      }
+
+      .btn:hover::before {
+        width: 300px;
+        height: 300px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px var(--primary);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--light);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary);
+      }
+
+      .btn-icon {
+        width: auto;
+        padding: 0.75rem 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      /* ===== TRANSACTION HISTORY ===== */
+
+      .history-section {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: var(--card-border);
+        border-radius: 24px;
+        padding: 2rem;
+        margin-top: 2rem;
+      }
+
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .history-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .history-title h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .history-table th {
+        text-align: left;
+        padding: 1rem;
+        color: var(--gray);
+        font-weight: 500;
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .history-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.95rem;
+      }
+
+      .tx-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 1rem;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .tx-type.sent {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+      }
+
+      .tx-type.received {
+        background: rgba(16, 185, 129, 0.1);
+        color: #34d399;
+      }
+
+      .tx-link {
+        color: var(--primary-light);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .tx-link:hover {
+        text-decoration: underline;
+      }
+      /* ===== PRIVATE KEY WARNING ===== */
+
+      .private-key-section {
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .private-key-label {
+        color: var(--error);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+      }
+
+      .private-key-value {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1rem;
+        border-radius: 12px;
+        font-family: "Monaco", monospace;
+        font-size: 0.85rem;
+        color: #f87171;
+        word-break: break-all;
+      }
+      /* ===== LOADING STATES ===== */
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray);
+      }
+
+      .loading::after {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        border: 2px solid var(--primary);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* ===== RESPONSIVE DESIGN ===== */
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+        .header {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .wallet-grid {
+          grid-template-columns: 1fr;
+        }
+        .action-grid {
+          grid-template-columns: 1fr;
+        }
+        .history-table {
+          font-size: 0.85rem;
+        }
+      }
+      /* ===== UTILITIES ===== */
+
+      .text-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .flex {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .mt-4 {
+        margin-top: 2rem;
+      }
+
+      .mb-2 {
+        margin-bottom: 1rem;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <div class="logo-icon">
+            <span>⌘</span>
+          </div>
+          <div class="logo-text">
+            <h1>NovaCrypto</h1>
+            <p>Professional self-custody wallet</p>
+          </div>
+        </div>
+        <div class="network-badge">
+          <div class="network-indicator"></div>
+          <span> Connected</span>
+        </div>
+      </div>
+
+      <!-- Status Card -->
+      <div class="status-card">
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-label">Network Status</div>
+            <div class="status-value" id="api-status">
+              Checking connection...
+            </div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">Active Networks</div>
+            <div class="status-value">Ethereum • Solana</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">Connection</div>
+            <div class="status-value">RPC • GetBlock.io</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Grid -->
+      <div class="action-grid">
+        <!-- Create Wallet Card -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">✨</div>
+            <div class="action-title">
+              <h3>Create Wallet</h3>
+              <p>Generate new 12-word phrase</p>
+            </div>
+          </div>
+          <button class="btn" onclick="createWallet()">
+            Generate New Wallet
+          </button>
+          <div id="new-wallet-result" style="display: none">
+            <div class="mnemonic-box" id="mnemonic-display"></div>
+            <div class="warning-message">
+              ⚠️ Store these words securely. Never share them with anyone.
+            </div>
+          </div>
+        </div>
+
+        <!-- Import Wallet Card -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">📥</div>
+            <div class="action-title">
+              <h3>Import Wallet</h3>
+              <p>Recover existing wallet</p>
+            </div>
+          </div>
+          <textarea
+            id="import-mnemonic"
+            rows="3"
+            placeholder="Enter your 12-word phrase..."
+          ></textarea>
+          <button class="btn" onclick="importWallet()" style="margin-top: 1rem">
+            Import Wallet
+          </button>
+          <div
+            id="import-error"
+            style="color: var(--error); margin-top: 1rem; font-size: 0.9rem"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Wallet Container (Hidden by default) -->
+      <div id="wallet-container" style="display: none">
+        <!-- Wallet Grid -->
+        <div class="wallet-grid">
+          <!-- Ethereum Card -->
+          <div class="wallet-card ethereum">
+            <div class="wallet-header">
+              <div class="wallet-name">
+                <div class="wallet-icon ethereum">Ξ</div>
+                <h3>Ethereum</h3>
+              </div>
+            </div>
+            <div class="wallet-address" id="eth-address"></div>
+            <div class="wallet-balance" id="eth-balance">0.00 ETH</div>
+            <div class="wallet-usd" id="eth-usd">≈ $0.00 USD</div>
+
+            <h4 style="margin: 1.5rem 0 1rem">Send Transaction</h4>
+            <div class="input-group">
+              <label>Recipient Address</label>
+              <input type="text" id="send-eth-to" placeholder="0x..." />
+            </div>
+            <div class="input-group">
+              <label>Amount (ETH)</label>
+              <input
+                type="number"
+                id="send-eth-amount"
+                step="0.0001"
+                placeholder="0.00"
+              />
+            </div>
+            <button class="btn" onclick="sendEth()">Send ETH</button>
+          </div>
+
+          <!-- Solana Card -->
+          <div class="wallet-card solana">
+            <div class="wallet-header">
+              <div class="wallet-name">
+                <div class="wallet-icon solana">◎</div>
+                <h3>Solana</h3>
+              </div>
+            </div>
+            <div class="wallet-address" id="sol-address"></div>
+            <div class="wallet-balance" id="sol-balance">0.00 SOL</div>
+            <div class="wallet-usd" id="sol-usd">≈ $0.00 USD</div>
+
+            <h4 style="margin: 1.5rem 0 1rem">Send Transaction</h4>
+            <div class="input-group">
+              <label>Recipient Address</label>
+              <input
+                type="text"
+                id="send-sol-to"
+                placeholder="Solana address..."
+              />
+            </div>
+            <div class="input-group">
+              <label>Amount (SOL)</label>
+              <input
+                type="number"
+                id="send-sol-amount"
+                step="0.001"
+                placeholder="0.00"
+              />
+            </div>
+            <button class="btn" onclick="sendSol()">Send SOL</button>
+          </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="history-section">
+          <div class="history-header">
+            <div class="history-title">
+              <span>📜</span>
+              <h3>Transaction History</h3>
+            </div>
+          </div>
+
+          <!-- Ethereum History -->
+          <h4 style="color: var(--ethereum); margin: 1.5rem 0 1rem">
+            Ξ Ethereum
+          </h4>
+          <div id="eth-transactions-list" class="loading">
+            Click refresh to load transactions...
+          </div>
+          <button
+            class="btn btn-secondary btn-icon"
+            onclick="loadEthHistory()"
+            style="width: auto; margin: 1rem 0"
+          >
+            🔄 Refresh ETH History
+          </button>
+
+          <!-- Solana History -->
+          <h4 style="color: var(--solana); margin: 2rem 0 1rem">◎ Solana</h4>
+          <div id="sol-transactions-list" class="loading">
+            Click refresh to load transactions...
+          </div>
+          <button
+            class="btn btn-secondary btn-icon"
+            onclick="loadSolHistory()"
+            style="width: auto; margin: 1rem 0"
+          >
+            🔄 Refresh SOL History
+          </button>
+        </div>
+
+        <!-- Private Key (Hidden for security - shown only when needed) -->
+        <div
+          class="private-key-section"
+          style="display: none"
+          id="private-key-container"
+        >
+          <div class="private-key-label">🔑 PRIVATE KEY (NEVER SHARE)</div>
+          <div class="private-key-value" id="eth-private"></div>
+        </div>
+      </div>
+
+      <!-- Footer Note -->
+      <div
+        class="text-center"
+        style="margin-top: 3rem; color: var(--gray); font-size: 0.9rem"
+      >
+        ⚡ Self-custodial wallet
+      </div>
+    </div>
+
+    <script>
+      let currentWallet = null;
+
+      // Check status
+      async function checkStatus() {
+        try {
+          const response = await fetch("http://localhost:3000/api/status");
+          const data = await response.json();
+          document.getElementById("api-status").innerHTML =
+            `<span style="color: var(--success);">✅ Connected • ${data.endpoints?.length || 9} endpoints active</span>`;
+        } catch (error) {
+          document.getElementById("api-status").innerHTML =
+            `<span style="color: var(--error);">❌ Disconnected • Server not running</span>`;
+        }
+      }
+
+      // Create wallet
+      async function createWallet() {
+        try {
+          const response = await fetch("http://localhost:3000/api/wallet/new", {
+            method: "POST",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("new-wallet-result").style.display =
+              "block";
+            document.getElementById("mnemonic-display").innerText =
+              data.wallet.mnemonic;
+            displayWallet(data.wallet);
+
+            // Show private key section for new wallets
+            document.getElementById("private-key-container").style.display =
+              "block";
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      // Import wallet
+      async function importWallet() {
+        const mnemonic = document
+          .getElementById("import-mnemonic")
+          .value.trim();
+        const errorDiv = document.getElementById("import-error");
+        errorDiv.innerHTML = "";
+
+        if (!mnemonic) {
+          errorDiv.innerHTML = "❌ Please enter your 12-word phrase";
+          return;
+        }
+
+        const words = mnemonic.split(" ").filter((w) => w.trim() !== "");
+        if (words.length !== 12) {
+          errorDiv.innerHTML = `❌ You entered ${words.length} words. Need exactly 12 words.`;
+          return;
+        }
+
+        const importBtn = event.target;
+        const originalText = importBtn.innerText;
+        importBtn.innerText = "⏳ Importing...";
+        importBtn.disabled = true;
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/wallet/import",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                mnemonic,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentWallet = data.wallet;
+            displayWallet(data.wallet);
+            document.getElementById("import-mnemonic").value = "";
+            errorDiv.innerHTML = "";
+            document.getElementById("wallet-container").style.display = "block";
+
+            // Show private key section for imported wallets too
+            document.getElementById("private-key-container").style.display =
+              "block";
+          } else {
+            errorDiv.innerHTML = "❌ " + (data.error || "Import failed");
+          }
+        } catch (error) {
+          errorDiv.innerHTML = "❌ Connection error: " + error.message;
+        } finally {
+          importBtn.innerText = originalText;
+          importBtn.disabled = false;
+        }
+      }
+
+      // Display wallet
+      function displayWallet(wallet) {
+        currentWallet = wallet;
+        document.getElementById("wallet-container").style.display = "block";
+
+        document.getElementById("eth-address").innerText =
+          wallet.ethereum.address;
+        document.getElementById("eth-balance").innerText =
+          wallet.ethereum.balance || "0.00 ETH";
+        document.getElementById("sol-address").innerText =
+          wallet.solana.address;
+        document.getElementById("sol-balance").innerText =
+          wallet.solana.balance || "0.00 SOL";
+        document.getElementById("eth-private").innerText =
+          wallet.ethereum.privateKey;
+
+        // Load transaction history automatically
+        loadEthHistory();
+        loadSolHistory();
+      }
+
+      // Send ETH
+      async function sendEth() {
+        if (!currentWallet) {
+          alert("No wallet loaded");
+          return;
+        }
+
+        const toAddress = document.getElementById("send-eth-to").value;
+        const amount = document.getElementById("send-eth-amount").value;
+
+        if (!toAddress || !amount) {
+          alert("Please enter address and amount");
+          return;
+        }
+
+        if (
+          !confirm(`⚠️ Send ${amount} ETH to ${toAddress.substring(0, 10)}...?`)
+        )
+          return;
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/send/ethereum",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                privateKey: currentWallet.ethereum.privateKey,
+                to: toAddress,
+                amount: amount,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert(
+              `✅ Transaction sent!\nHash: ${data.txHash.substring(0, 20)}...`,
+            );
+            loadEthHistory(); // Refresh history
+          } else {
+            alert(`❌ Failed: ${data.error}`);
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      // Send SOL
+      async function sendSol() {
+        if (!currentWallet) {
+          alert("No wallet loaded");
+          return;
+        }
+
+        const toAddress = document.getElementById("send-sol-to").value;
+        const amount = document.getElementById("send-sol-amount").value;
+
+        if (!toAddress || !amount) {
+          alert("Please enter address and amount");
+          return;
+        }
+
+        if (
+          !confirm(`⚠️ Send ${amount} SOL to ${toAddress.substring(0, 10)}...?`)
+        )
+          return;
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/send/solana",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                privateKey: currentWallet.solana.privateKeyBase58,
+                to: toAddress,
+                amount: amount,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert(
+              `✅ Transaction sent!\nSignature: ${data.txHash.substring(0, 20)}...`,
+            );
+            loadSolHistory(); // Refresh history
+          } else {
+            alert(`❌ Failed: ${data.error}`);
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      // Load ETH history
+      async function loadEthHistory() {
+        if (!currentWallet) return;
+
+        const address = currentWallet.ethereum.address;
+        const historyDiv = document.getElementById("eth-transactions-list");
+        historyDiv.innerHTML =
+          '<div class="loading">Loading Ethereum transactions...</div>';
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/history/ethereum",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                address,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success && data.transactions.length > 0) {
+            let html =
+              '<table class="history-table"><thead><tr><th>Type</th><th>Amount</th><th>To/From</th><th>Date</th><th></th></tr></thead><tbody>';
+
+            data.transactions.forEach((tx) => {
+              html += `<tr>
+                            <td><span class="tx-type ${tx.type}">${tx.type === "sent" ? "↑" : "↓"} ${tx.type.toUpperCase()}</span></td>
+                            <td><strong>${parseFloat(tx.value).toFixed(6)} ETH</strong></td>
+                            <td style="font-family: monospace;">${tx.type === "sent" ? (tx.to || "").substring(0, 10) + "..." : (tx.from || "").substring(0, 10) + "..."}</td>
+                            <td>${new Date(tx.date).toLocaleDateString()}</td>
+                            <td><a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" class="tx-link">View ↗</a></td>
+                        </tr>`;
+            });
+
+            html += "</tbody></table>";
+            historyDiv.innerHTML = html;
+          } else {
+            historyDiv.innerHTML =
+              '<div class="text-center" style="padding: 2rem; color: var(--gray);">📭 No transactions found</div>';
+          }
+        } catch (error) {
+          historyDiv.innerHTML = `<div style="color: var(--error);">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Load SOL history
+      async function loadSolHistory() {
+        if (!currentWallet) return;
+
+        const address = currentWallet.solana.address;
+        const historyDiv = document.getElementById("sol-transactions-list");
+        historyDiv.innerHTML =
+          '<div class="loading">Loading Solana transactions...</div>';
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/history/solana",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                address,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success && data.transactions.length > 0) {
+            let html =
+              '<table class="history-table"><thead><tr><th>Signature</th><th>Date</th><th></th></tr></thead><tbody>';
+
+            data.transactions.forEach((tx) => {
+              html += `<tr>
+                            <td style="font-family: monospace;">${tx.signature.substring(0, 16)}...</td>
+                            <td>${new Date(tx.date).toLocaleDateString()}</td>
+                            <td><a href="https://solscan.io/tx/${tx.signature}" target="_blank" class="tx-link">View ↗</a></td>
+                        </tr>`;
+            });
+
+            html += "</tbody></table>";
+            historyDiv.innerHTML = html;
+          } else {
+            historyDiv.innerHTML =
+              '<div class="text-center" style="padding: 2rem; color: var(--gray);">📭 No transactions found</div>';
+          }
+        } catch (error) {
+          historyDiv.innerHTML = `<div style="color: var(--error);">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Check status on load
+      checkStatus();
+    </script>
+  </body>
+</html>
