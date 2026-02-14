@@ -1,7 +1,33 @@
-// api/server.js - This connects your Express app to Vercel
-const app = require("../server.js");
+// api/server.js - MINIMAL TEST VERSION
+console.log("🚀 Starting minimal test function...");
 
-// Export for Vercel serverless
-module.exports = app;
+try {
+  const express = require("express");
+  const app = express();
 
-console.log("✅ API serverless function loaded");
+  // Simple test endpoint
+  app.get("/api/test", (req, res) => {
+    res.json({
+      success: true,
+      message: "Minimal test is working!",
+      time: new Date().toISOString(),
+    });
+  });
+
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
+
+  console.log("✅ Express app created");
+  module.exports = app;
+} catch (error) {
+  console.error("❌ Crash error:", error);
+  // Export a fallback function
+  module.exports = (req, res) => {
+    res.status(500).json({
+      error: "Function crashed during startup",
+      details: error.message,
+    });
+  };
+}
