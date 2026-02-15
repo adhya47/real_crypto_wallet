@@ -1396,7 +1396,97 @@ async function getSolBalance(address) {
     return "0.00 SOL";
   }
 }
+// ============================================
+// ADD THESE MISSING ENDPOINTS to your server.js
+// ============================================
 
+// GET ETHEREUM HISTORY
+app.post("/api/history/ethereum", async (req, res) => {
+  try {
+    const { address } = req.body;
+
+    if (!address) {
+      return res.json({ success: true, transactions: [] });
+    }
+
+    if (!sirEth || !sirEth.GETBLOCK_ETH_URL) {
+      return res.json({ success: true, transactions: [] });
+    }
+
+    const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
+    const currentBlock = await provider.getBlockNumber();
+    const balance = await provider.getBalance(address);
+    const transactions = [];
+
+    // Check last 10 blocks
+    for (let i = 0; i < 10; i++) {
+      const blockNumber = currentBlock - i;
+      if (blockNumber < 0) break;
+
+      try {
+        const block = await provider.getBlock(blockNumber, true);
+        if (!block || !block.transactions) continue;
+
+        for (const tx of block.transactions) {
+          if (typeof tx === "string") continue;
+
+          const isFrom = tx.from?.toLowerCase() === address.toLowerCase();
+          const isTo = tx.to?.toLowerCase() === address.toLowerCase();
+
+          if (isFrom || isTo) {
+            transactions.push({
+              hash: tx.hash,
+              from: tx.from,
+              to: tx.to,
+              value: ethers.formatEther(tx.value || "0"),
+              date: block.timestamp
+                ? new Date(block.timestamp * 1000).toISOString()
+                : new Date().toISOString(),
+              type: isFrom ? "sent" : "received",
+            });
+          }
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+
+    res.json({ success: true, transactions });
+  } catch (error) {
+    res.json({ success: true, transactions: [] });
+  }
+});
+
+// GET SOLANA HISTORY
+app.post("/api/history/solana", async (req, res) => {
+  try {
+    const { address } = req.body;
+
+    if (!address || !sirSol || !sirSol.GETBLOCK_SOL_URL) {
+      return res.json({ success: true, transactions: [] });
+    }
+
+    const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
+    const pubKey = new PublicKey(address);
+    const signatures = await connection.getSignaturesForAddress(pubKey, {
+      limit: 10,
+    });
+    const transactions = [];
+
+    for (const sig of signatures) {
+      transactions.push({
+        signature: sig.signature,
+        date: sig.blockTime
+          ? new Date(sig.blockTime * 1000).toISOString()
+          : new Date().toISOString(),
+      });
+    }
+
+    res.json({ success: true, transactions });
+  } catch (error) {
+    res.json({ success: true, transactions: [] });
+  }
+});
 // ============================================
 // SIMPLE TEST ENDPOINT - ALWAYS WORKS
 // ============================================
