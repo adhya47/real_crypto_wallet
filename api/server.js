@@ -32,5 +32,6 @@
 //   };
 // }
 // api/server.js
-const app = require("./server.js");
+// api/server.js
+const app = require("../server.js");
 module.exports = app;
