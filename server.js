@@ -1277,17 +1277,12 @@ app.get("/", (req, res) => {
 // VERCEL EXPORT - CRITICAL FOR DEPLOYMENT
 // ============================================
 
-// Export the app for Vercel
-module.exports = app;
-
 // Only listen when running directly (not on Vercel)
-if (require.main === module && !process.env.VERCEL) {
+// ✅ CORRECT for Vercel
+module.exports = app; // ← MUST HAVE THIS!
+
+// Only listen locally
+if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log("\n" + "=".repeat(70));
-    console.log("🚀 SIR'S CRYPTO WALLET - RUNNING LOCALLY!");
-    console.log("=".repeat(70));
-    console.log(`📍 URL: http://localhost:${PORT}`);
-    console.log("=".repeat(70) + "\n");
-  });
+  app.listen(PORT, () => console.log(`Local server: ${PORT}`));
 }
