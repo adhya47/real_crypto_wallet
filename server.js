@@ -686,54 +686,612 @@
 //   console.log("   9. GET  /api/status         - Server status");
 //   console.log("=".repeat(70) + "\n");
 // });
+// // const express = require("express");
+// // const cors = require("cors");
+// // const bodyParser = require("body-parser");
+// // const path = require("path");
+
+// // // ============================================
+// // // LOAD SIR'S FILES
+// // // ============================================
+// // let sirEth, sirSol;
+
+// // try {
+// //   sirEth = require("./index.cjs");
+// //   console.log("✅ Loaded index.cjs - Sir's Ethereum functions");
+// // } catch (error) {
+// //   console.error("❌ Failed to load index.cjs:", error.message);
+// //   sirEth = {
+// //     GETBLOCK_ETH_URL: process.env.GETBLOCK_ETH_URL || null,
+// //     // Mock functions for Vercel
+// //     sendTransactionWithProvider: async () => {
+// //       throw new Error("Ethereum send function not available in serverless");
+// //     },
+// //   };
+// // }
+
+// // try {
+// //   sirSol = require("./solu.cjs");
+// //   console.log("✅ Loaded solu.cjs - Sir's Solana functions");
+// // } catch (error) {
+// //   console.error("❌ Failed to load solu.cjs:", error.message);
+// //   sirSol = {
+// //     GETBLOCK_SOL_URL: process.env.GETBLOCK_SOL_URL || null,
+// //     sendSolanaTransactionRaw: async () => {
+// //       throw new Error("Solana send function not available in serverless");
+// //     },
+// //   };
+// // }
+
+// // const app = express();
+
+// // // Middleware
+// // app.use(cors());
+// // app.use(bodyParser.json());
+// // app.use(express.static("public"));
+
+// // // ============================================
+// // // WALLET DERIVATION FUNCTIONS
+// // // ============================================
+
+// // const bip39 = require("bip39");
+// // const ethers = require("ethers");
+// // const bitcoin = require("bitcoinjs-lib");
+// // const { BIP32Factory } = require("bip32");
+// // const ecc = require("tiny-secp256k1");
+// // const {
+// //   Connection,
+// //   Keypair,
+// //   PublicKey,
+// //   LAMPORTS_PER_SOL,
+// // } = require("@solana/web3.js");
+// // const { derivePath } = require("ed25519-hd-key");
+// // const bs58 = require("bs58");
+
+// // const bip32 = BIP32Factory(ecc);
+
+// // // Store wallets in memory (note: this resets on each serverless invocation)
+// // let savedWallets = [];
+
+// // function deriveEthereumWallet(seed) {
+// //   try {
+// //     const ethPath = "m/44'/60'/0'/0/0";
+// //     const rootNode = ethers.HDNodeWallet.fromSeed(seed);
+// //     const ethNode = rootNode.derivePath(ethPath);
+// //     return {
+// //       path: ethPath,
+// //       privateKey: ethNode.privateKey,
+// //       publicKey: ethNode.publicKey,
+// //       address: ethNode.address,
+// //     };
+// //   } catch (error) {
+// //     console.error("Ethereum derivation error:", error);
+// //     throw error;
+// //   }
+// // }
+
+// // function deriveBitcoinWallet(seed) {
+// //   try {
+// //     const btcPath = "m/44'/0'/0'/0/0";
+// //     const rootNode = bip32.fromSeed(seed);
+// //     const btcNode = rootNode.derivePath(btcPath);
+// //     const btcAddress = bitcoin.payments.p2pkh({
+// //       pubkey: Buffer.from(btcNode.publicKey),
+// //     }).address;
+// //     return {
+// //       path: btcPath,
+// //       privateKeyWIF: btcNode.toWIF(),
+// //       publicKey: btcNode.publicKey.toString("hex"),
+// //       address: btcAddress,
+// //     };
+// //   } catch (error) {
+// //     console.error("Bitcoin derivation error:", error);
+// //     throw error;
+// //   }
+// // }
+
+// // function deriveSolanaWallet(seed) {
+// //   try {
+// //     const solanaPath = "m/44'/501'/0'/0'";
+// //     const seedBuffer = Buffer.from(seed);
+// //     const derivedSeed = derivePath(solanaPath, seedBuffer.toString("hex")).key;
+// //     const solanaKeypair = Keypair.fromSeed(derivedSeed.slice(0, 32));
+// //     const solanaAddress = solanaKeypair.publicKey.toBase58();
+// //     const solanaPrivateKey = bs58.encode(Buffer.from(solanaKeypair.secretKey));
+// //     return {
+// //       path: solanaPath,
+// //       privateKeyBase58: solanaPrivateKey,
+// //       publicKey: solanaKeypair.publicKey.toString(),
+// //       address: solanaAddress,
+// //     };
+// //   } catch (error) {
+// //     console.error("Solana derivation error:", error);
+// //     throw error;
+// //   }
+// // }
+
+// // // ============================================
+// // // BALANCE FUNCTIONS
+// // // ============================================
+
+// // async function getEthBalance(address) {
+// //   try {
+// //     if (!sirEth || !sirEth.GETBLOCK_ETH_URL) return "0.00 ETH";
+// //     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
+// //     const balance = await provider.getBalance(address);
+// //     return `${ethers.formatEther(balance)} ETH`;
+// //   } catch (error) {
+// //     console.error("ETH balance error:", error.message);
+// //     return "0.00 ETH";
+// //   }
+// // }
+
+// // async function getSolBalance(address) {
+// //   try {
+// //     if (!sirSol || !sirSol.GETBLOCK_SOL_URL) return "0.00 SOL";
+// //     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
+// //     const pubKey = new PublicKey(address);
+// //     const balance = await connection.getBalance(pubKey);
+// //     return `${(balance / LAMPORTS_PER_SOL).toFixed(4)} SOL`;
+// //   } catch (error) {
+// //     console.error("SOL balance error:", error.message);
+// //     return "0.00 SOL";
+// //   }
+// // }
+
+// // // ============================================
+// // // HEALTH CHECK ENDPOINT (CRITICAL FOR VERCEL)
+// // // ============================================
+// // app.get("/api/health", (req, res) => {
+// //   res.json({
+// //     status: "ok",
+// //     time: new Date().toISOString(),
+// //     environment: process.env.VERCEL ? "vercel" : "local",
+// //   });
+// // });
+
+// // // ============================================
+// // // API ENDPOINTS
+// // // ============================================
+
+// // // 1. CREATE NEW WALLET
+// // app.post("/api/wallet/new", async (req, res) => {
+// //   try {
+// //     console.log("📝 Creating new wallet...");
+// //     const mnemonic = bip39.generateMnemonic();
+// //     const seed = await bip39.mnemonicToSeed(mnemonic);
+
+// //     const ethWallet = deriveEthereumWallet(seed);
+// //     const btcWallet = deriveBitcoinWallet(seed);
+// //     const solWallet = deriveSolanaWallet(seed);
+
+// //     const ethBalance = await getEthBalance(ethWallet.address);
+// //     const solBalance = await getSolBalance(solWallet.address);
+
+// //     const walletData = {
+// //       id: Date.now().toString(),
+// //       mnemonic,
+// //       ethereum: {
+// //         ...ethWallet,
+// //         balance: ethBalance,
+// //         usdValue: "$0.00",
+// //       },
+// //       bitcoin: {
+// //         ...btcWallet,
+// //         balance: "0.00000000 BTC",
+// //         usdValue: "$0.00",
+// //       },
+// //       solana: {
+// //         ...solWallet,
+// //         balance: solBalance,
+// //         usdValue: "$0.00",
+// //       },
+// //       createdAt: new Date().toISOString(),
+// //     };
+
+// //     savedWallets.push(walletData);
+// //     console.log(`✅ Wallet created: ${ethWallet.address}`);
+// //     res.json({ success: true, wallet: walletData });
+// //   } catch (error) {
+// //     console.error("Create wallet error:", error);
+// //     res.status(500).json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 2. IMPORT WALLET
+// // app.post("/api/wallet/import", async (req, res) => {
+// //   try {
+// //     const { mnemonic } = req.body;
+// //     console.log("📥 Importing wallet...");
+
+// //     if (!mnemonic) {
+// //       return res.status(400).json({
+// //         success: false,
+// //         error: "Mnemonic phrase is required",
+// //       });
+// //     }
+
+// //     if (!bip39.validateMnemonic(mnemonic)) {
+// //       return res.status(400).json({
+// //         success: false,
+// //         error: "Invalid mnemonic phrase. Please check your 12 words.",
+// //       });
+// //     }
+
+// //     const seed = await bip39.mnemonicToSeed(mnemonic);
+// //     const ethWallet = deriveEthereumWallet(seed);
+// //     const btcWallet = deriveBitcoinWallet(seed);
+// //     const solWallet = deriveSolanaWallet(seed);
+
+// //     const ethBalance = await getEthBalance(ethWallet.address);
+// //     const solBalance = await getSolBalance(solWallet.address);
+
+// //     const walletData = {
+// //       id: Date.now().toString(),
+// //       mnemonic,
+// //       ethereum: {
+// //         ...ethWallet,
+// //         balance: ethBalance,
+// //         usdValue: "$0.00",
+// //       },
+// //       bitcoin: {
+// //         ...btcWallet,
+// //         balance: "0.00000000 BTC",
+// //         usdValue: "$0.00",
+// //       },
+// //       solana: {
+// //         ...solWallet,
+// //         balance: solBalance,
+// //         usdValue: "$0.00",
+// //       },
+// //       createdAt: new Date().toISOString(),
+// //     };
+
+// //     savedWallets.push(walletData);
+// //     console.log(`✅ Wallet imported: ${ethWallet.address}`);
+// //     res.json({ success: true, wallet: walletData });
+// //   } catch (error) {
+// //     console.error("Import wallet error:", error);
+// //     res.status(500).json({
+// //       success: false,
+// //       error: error.message,
+// //     });
+// //   }
+// // });
+
+// // // 3. SEND ETHEREUM
+// // app.post("/api/send/ethereum", async (req, res) => {
+// //   try {
+// //     const { privateKey, to, amount } = req.body;
+// //     if (!sirEth || !sirEth.sendTransactionWithProvider) {
+// //       throw new Error("Ethereum send function not available");
+// //     }
+// //     console.log(`📡 Sending ${amount} ETH to ${to}...`);
+// //     const txHash = await sirEth.sendTransactionWithProvider(
+// //       privateKey,
+// //       to,
+// //       amount,
+// //     );
+// //     res.json({
+// //       success: true,
+// //       txHash,
+// //       explorerUrl: `https://sepolia.etherscan.io/tx/${txHash}`,
+// //       message: "✅ Transaction sent successfully!",
+// //     });
+// //   } catch (error) {
+// //     console.error("ETH send error:", error);
+// //     res.status(500).json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 4. SEND SOLANA
+// // app.post("/api/send/solana", async (req, res) => {
+// //   try {
+// //     const { privateKey, to, amount } = req.body;
+// //     if (!sirSol || !sirSol.sendSolanaTransactionRaw) {
+// //       throw new Error("Solana send function not available");
+// //     }
+// //     console.log(`📡 Sending ${amount} SOL to ${to}...`);
+// //     const signature = await sirSol.sendSolanaTransactionRaw(
+// //       privateKey,
+// //       to,
+// //       parseFloat(amount),
+// //     );
+// //     res.json({
+// //       success: true,
+// //       txHash: signature,
+// //       explorerUrl: `https://solscan.io/tx/${signature}`,
+// //       message: "✅ Transaction sent successfully!",
+// //     });
+// //   } catch (error) {
+// //     console.error("SOL send error:", error);
+// //     res.status(500).json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 5. TEST SIR'S ETHEREUM FUNCTION
+// // app.post("/api/test/sir-ethereum", async (req, res) => {
+// //   try {
+// //     if (!sirEth || !sirEth.testSirTransaction) {
+// //       throw new Error("Sir's test function not available");
+// //     }
+// //     console.log("🧪 Testing Sir's Ethereum function...");
+// //     const txHash = await sirEth.testSirTransaction();
+// //     res.json({
+// //       success: true,
+// //       txHash,
+// //       message: "✅ Sir's test transaction sent!",
+// //     });
+// //   } catch (error) {
+// //     res.status(500).json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 6. TEST SIR'S SOLANA FUNCTION
+// // app.post("/api/test/sir-solana", async (req, res) => {
+// //   try {
+// //     if (!sirSol || !sirSol.testSirSolanaTransaction) {
+// //       throw new Error("Sir's test function not available");
+// //     }
+// //     console.log("🧪 Testing Sir's Solana function...");
+// //     const signature = await sirSol.testSirSolanaTransaction();
+// //     res.json({
+// //       success: true,
+// //       txHash: signature,
+// //       message: "✅ Sir's test transaction sent!",
+// //     });
+// //   } catch (error) {
+// //     res.status(500).json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 7. GET ETHEREUM HISTORY
+// // app.post("/api/history/ethereum", async (req, res) => {
+// //   try {
+// //     const { address } = req.body;
+
+// //     console.log(`🔍 Fetching ETH history for: ${address}`);
+
+// //     if (!address) {
+// //       return res.json({ success: true, transactions: [] });
+// //     }
+
+// //     if (!sirEth || !sirEth.GETBLOCK_ETH_URL) {
+// //       return res.json({ success: true, transactions: [] });
+// //     }
+
+// //     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
+
+// //     // Get current block and balance
+// //     const currentBlock = await provider.getBlockNumber();
+// //     const balance = await provider.getBalance(address);
+// //     const balanceInEth = parseFloat(ethers.formatEther(balance));
+
+// //     console.log(`   Current block: ${currentBlock}`);
+// //     console.log(`   Balance: ${balanceInEth} ETH`);
+
+// //     const transactions = [];
+
+// //     // Check last 20 blocks for transactions
+// //     for (let i = 0; i < 20; i++) {
+// //       const blockNumber = currentBlock - i;
+// //       if (blockNumber < 0) break;
+
+// //       try {
+// //         const block = await provider.getBlock(blockNumber, true);
+// //         if (!block || !block.transactions) continue;
+
+// //         for (const tx of block.transactions) {
+// //           if (typeof tx === "string") continue;
+
+// //           // Check if this transaction involves our address
+// //           const isFrom = tx.from?.toLowerCase() === address.toLowerCase();
+// //           const isTo = tx.to?.toLowerCase() === address.toLowerCase();
+
+// //           if (isFrom || isTo) {
+// //             transactions.push({
+// //               hash: tx.hash,
+// //               from: tx.from,
+// //               to: tx.to,
+// //               value: ethers.formatEther(tx.value || "0"),
+// //               blockNumber: block.number,
+// //               timestamp: block.timestamp,
+// //               date: block.timestamp
+// //                 ? new Date(block.timestamp * 1000).toISOString()
+// //                 : new Date().toISOString(),
+// //               type: isFrom ? "sent" : "received",
+// //               status: "confirmed",
+// //             });
+// //           }
+// //         }
+// //       } catch (e) {
+// //         continue;
+// //       }
+// //     }
+
+// //     // If balance > 0 but no transactions found, show the balance
+// //     if (transactions.length === 0 && balanceInEth > 0) {
+// //       console.log(`✅ Balance > 0 - adding as received transaction`);
+// //       transactions.push({
+// //         hash: "view-on-etherscan",
+// //         from: "💰 Faucet / Deposit",
+// //         to: address,
+// //         value: balanceInEth.toFixed(4),
+// //         blockNumber: "N/A",
+// //         timestamp: Date.now() / 1000,
+// //         date: new Date().toISOString(),
+// //         type: "received",
+// //         status: "confirmed",
+// //       });
+// //     }
+
+// //     // Sort by newest first
+// //     transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+// //     res.json({
+// //       success: true,
+// //       transactions: transactions.slice(0, 20),
+// //     });
+// //   } catch (error) {
+// //     console.error("ETH history error:", error);
+// //     res.json({ success: true, transactions: [] });
+// //   }
+// // });
+
+// // // 8. GET SOLANA HISTORY
+// // app.post("/api/history/solana", async (req, res) => {
+// //   try {
+// //     const { address } = req.body;
+// //     if (!address) return res.json({ success: true, transactions: [] });
+// //     if (!sirSol || !sirSol.GETBLOCK_SOL_URL)
+// //       return res.json({ success: true, transactions: [] });
+
+// //     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
+// //     const pubKey = new PublicKey(address);
+// //     const signatures = await connection.getSignaturesForAddress(pubKey, {
+// //       limit: 10,
+// //     });
+// //     const transactions = [];
+
+// //     for (const sig of signatures) {
+// //       transactions.push({
+// //         signature: sig.signature,
+// //         date: sig.blockTime
+// //           ? new Date(sig.blockTime * 1000).toISOString()
+// //           : new Date().toISOString(),
+// //         status: "success",
+// //       });
+// //     }
+// //     res.json({ success: true, transactions });
+// //   } catch (error) {
+// //     console.error("SOL history error:", error);
+// //     res.json({ success: true, transactions: [] });
+// //   }
+// // });
+
+// // // 9. GET BALANCE
+// // app.post("/api/balance", async (req, res) => {
+// //   try {
+// //     const { address, blockchain } = req.body;
+// //     if (blockchain === "ethereum") {
+// //       const balance = await getEthBalance(address);
+// //       res.json({ success: true, balance });
+// //     } else if (blockchain === "solana") {
+// //       const balance = await getSolBalance(address);
+// //       res.json({ success: true, balance });
+// //     } else {
+// //       res.json({ success: true, balance: "0.00" });
+// //     }
+// //   } catch (error) {
+// //     res.json({ success: true, balance: "0.00" });
+// //   }
+// // });
+
+// // // 10. NETWORK CHECK ENDPOINTS
+// // app.get("/api/check-ethereum-network", async (req, res) => {
+// //   try {
+// //     if (!sirEth || !sirEth.GETBLOCK_ETH_URL) {
+// //       return res.json({ success: false, error: "No URL configured" });
+// //     }
+
+// //     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
+// //     const network = await provider.getNetwork();
+// //     const blockNumber = await provider.getBlockNumber();
+// //     const chainId = network.chainId.toString();
+
+// //     let networkName = "Unknown";
+// //     if (chainId === "1") networkName = "Ethereum Mainnet";
+// //     else if (chainId === "11155111") networkName = "Sepolia Testnet";
+// //     else if (chainId === "5") networkName = "Goerli Testnet";
+
+// //     res.json({
+// //       success: true,
+// //       network_name: networkName,
+// //       chain_id: chainId,
+// //       block_number: blockNumber,
+// //     });
+// //   } catch (error) {
+// //     res.json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // app.get("/api/check-solana-network", async (req, res) => {
+// //   try {
+// //     if (!sirSol || !sirSol.GETBLOCK_SOL_URL) {
+// //       return res.json({ success: false, error: "No URL configured" });
+// //     }
+
+// //     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
+// //     const genesisHash = await connection.getGenesisHash();
+// //     const version = await connection.getVersion();
+
+// //     let networkName = "Unknown";
+// //     if (genesisHash === "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d") {
+// //       networkName = "Solana Mainnet";
+// //     } else if (genesisHash === "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG") {
+// //       networkName = "Solana Devnet";
+// //     }
+
+// //     res.json({
+// //       success: true,
+// //       network: networkName,
+// //       genesis_hash: genesisHash,
+// //       version: version,
+// //     });
+// //   } catch (error) {
+// //     res.json({ success: false, error: error.message });
+// //   }
+// // });
+
+// // // 11. GET STATUS
+// // app.get("/api/status", (req, res) => {
+// //   res.json({
+// //     success: true,
+// //     message: "🚀 NovaCrypto Wallet API is running!",
+// //     environment: process.env.VERCEL ? "vercel" : "local",
+// //     endpoints: [
+// //       "POST /api/wallet/new",
+// //       "POST /api/wallet/import",
+// //       "POST /api/send/ethereum",
+// //       "POST /api/send/solana",
+// //       "POST /api/history/ethereum",
+// //       "POST /api/history/solana",
+// //       "POST /api/balance",
+// //       "GET /api/status",
+// //       "GET /api/health",
+// //     ],
+// //   });
+// // });
+
+// // // 12. GET ALL WALLETS
+// // app.get("/api/wallets", (req, res) => {
+// //   res.json({ success: true, wallets: savedWallets });
+// // });
+
+// // // 13. SERVE FRONTEND
+// // app.get("/", (req, res) => {
+// //   res.sendFile(path.join(__dirname, "public", "index.html"));
+// // });
+
+// // // ============================================
+// // // VERCEL EXPORT - CRITICAL FOR DEPLOYMENT
+// // // ============================================
+
+// // // Only listen when running directly (not on Vercel)
+// // // ✅ CORRECT for Vercel
+// // module.exports = app; // ← MUST HAVE THIS!
+
+// // // Only listen locally
+// // if (require.main === module) {
+// //   const PORT = process.env.PORT || 3000;
+// //   app.listen(PORT, () => console.log(`Local server: ${PORT}`));
+// // }
 // const express = require("express");
 // const cors = require("cors");
 // const bodyParser = require("body-parser");
 // const path = require("path");
 
-// // ============================================
-// // LOAD SIR'S FILES
-// // ============================================
-// let sirEth, sirSol;
-
-// try {
-//   sirEth = require("./index.cjs");
-//   console.log("✅ Loaded index.cjs - Sir's Ethereum functions");
-// } catch (error) {
-//   console.error("❌ Failed to load index.cjs:", error.message);
-//   sirEth = {
-//     GETBLOCK_ETH_URL: process.env.GETBLOCK_ETH_URL || null,
-//     // Mock functions for Vercel
-//     sendTransactionWithProvider: async () => {
-//       throw new Error("Ethereum send function not available in serverless");
-//     },
-//   };
-// }
-
-// try {
-//   sirSol = require("./solu.cjs");
-//   console.log("✅ Loaded solu.cjs - Sir's Solana functions");
-// } catch (error) {
-//   console.error("❌ Failed to load solu.cjs:", error.message);
-//   sirSol = {
-//     GETBLOCK_SOL_URL: process.env.GETBLOCK_SOL_URL || null,
-//     sendSolanaTransactionRaw: async () => {
-//       throw new Error("Solana send function not available in serverless");
-//     },
-//   };
-// }
-
-// const app = express();
-
-// // Middleware
-// app.use(cors());
-// app.use(bodyParser.json());
-// app.use(express.static("public"));
-
-// // ============================================
-// // WALLET DERIVATION FUNCTIONS
-// // ============================================
-
+// // Load dependencies
 // const bip39 = require("bip39");
 // const ethers = require("ethers");
 // const bitcoin = require("bitcoinjs-lib");
@@ -749,65 +1307,67 @@
 // const bs58 = require("bs58");
 
 // const bip32 = BIP32Factory(ecc);
+// const app = express();
 
-// // Store wallets in memory (note: this resets on each serverless invocation)
-// let savedWallets = [];
+// // Middleware
+// app.use(cors());
+// app.use(bodyParser.json());
+// app.use(express.static("public"));
 
-// function deriveEthereumWallet(seed) {
-//   try {
-//     const ethPath = "m/44'/60'/0'/0/0";
-//     const rootNode = ethers.HDNodeWallet.fromSeed(seed);
-//     const ethNode = rootNode.derivePath(ethPath);
-//     return {
-//       path: ethPath,
-//       privateKey: ethNode.privateKey,
-//       publicKey: ethNode.publicKey,
-//       address: ethNode.address,
-//     };
-//   } catch (error) {
-//     console.error("Ethereum derivation error:", error);
-//     throw error;
-//   }
+// // ============================================
+// // LOAD SIR'S FILES WITH ERROR HANDLING
+// // ============================================
+// let sirEth = { GETBLOCK_ETH_URL: process.env.GETBLOCK_ETH_URL };
+// let sirSol = { GETBLOCK_SOL_URL: process.env.GETBLOCK_SOL_URL };
+
+// try {
+//   const indexCjs = require("./index.cjs");
+//   sirEth = { ...sirEth, ...indexCjs };
+//   console.log("✅ Loaded index.cjs");
+// } catch (error) {
+//   console.log("⚠️ Using env vars for Ethereum:", error.message);
 // }
 
-// function deriveBitcoinWallet(seed) {
-//   try {
-//     const btcPath = "m/44'/0'/0'/0/0";
-//     const rootNode = bip32.fromSeed(seed);
-//     const btcNode = rootNode.derivePath(btcPath);
-//     const btcAddress = bitcoin.payments.p2pkh({
-//       pubkey: Buffer.from(btcNode.publicKey),
-//     }).address;
-//     return {
-//       path: btcPath,
-//       privateKeyWIF: btcNode.toWIF(),
-//       publicKey: btcNode.publicKey.toString("hex"),
-//       address: btcAddress,
-//     };
-//   } catch (error) {
-//     console.error("Bitcoin derivation error:", error);
-//     throw error;
-//   }
+// try {
+//   const soluCjs = require("./solu.cjs");
+//   sirSol = { ...sirSol, ...soluCjs };
+//   console.log("✅ Loaded solu.cjs");
+// } catch (error) {
+//   console.log("⚠️ Using env vars for Solana:", error.message);
+// }
+
+// // Store wallets in memory
+// let savedWallets = [];
+
+// // ============================================
+// // WALLET DERIVATION FUNCTIONS
+// // ============================================
+
+// function deriveEthereumWallet(seed) {
+//   const ethPath = "m/44'/60'/0'/0/0";
+//   const rootNode = ethers.HDNodeWallet.fromSeed(seed);
+//   const ethNode = rootNode.derivePath(ethPath);
+//   return {
+//     path: ethPath,
+//     privateKey: ethNode.privateKey,
+//     publicKey: ethNode.publicKey,
+//     address: ethNode.address,
+//   };
 // }
 
 // function deriveSolanaWallet(seed) {
-//   try {
-//     const solanaPath = "m/44'/501'/0'/0'";
-//     const seedBuffer = Buffer.from(seed);
-//     const derivedSeed = derivePath(solanaPath, seedBuffer.toString("hex")).key;
-//     const solanaKeypair = Keypair.fromSeed(derivedSeed.slice(0, 32));
-//     const solanaAddress = solanaKeypair.publicKey.toBase58();
-//     const solanaPrivateKey = bs58.encode(Buffer.from(solanaKeypair.secretKey));
-//     return {
-//       path: solanaPath,
-//       privateKeyBase58: solanaPrivateKey,
-//       publicKey: solanaKeypair.publicKey.toString(),
-//       address: solanaAddress,
-//     };
-//   } catch (error) {
-//     console.error("Solana derivation error:", error);
-//     throw error;
-//   }
+//   const solanaPath = "m/44'/501'/0'/0'";
+//   const seedBuffer = Buffer.from(seed);
+//   const derivedSeed = derivePath(solanaPath, seedBuffer.toString("hex")).key;
+//   const solanaKeypair = Keypair.fromSeed(derivedSeed.slice(0, 32));
+//   const solanaAddress = solanaKeypair.publicKey.toBase58();
+//   const solanaPrivateKey = bs58.encode(Buffer.from(solanaKeypair.secretKey));
+//   return {
+//     path: solanaPath,
+//     privateKeyBase58: solanaPrivateKey,
+//     publicKey: solanaKeypair.publicKey.toString(),
+//     address: solanaAddress,
+//   };
 // }
 
 // // ============================================
@@ -816,241 +1376,34 @@
 
 // async function getEthBalance(address) {
 //   try {
-//     if (!sirEth || !sirEth.GETBLOCK_ETH_URL) return "0.00 ETH";
+//     if (!sirEth.GETBLOCK_ETH_URL) return "0.00 ETH";
 //     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
 //     const balance = await provider.getBalance(address);
 //     return `${ethers.formatEther(balance)} ETH`;
 //   } catch (error) {
-//     console.error("ETH balance error:", error.message);
 //     return "0.00 ETH";
 //   }
 // }
 
 // async function getSolBalance(address) {
 //   try {
-//     if (!sirSol || !sirSol.GETBLOCK_SOL_URL) return "0.00 SOL";
+//     if (!sirSol.GETBLOCK_SOL_URL) return "0.00 SOL";
 //     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
 //     const pubKey = new PublicKey(address);
 //     const balance = await connection.getBalance(pubKey);
 //     return `${(balance / LAMPORTS_PER_SOL).toFixed(4)} SOL`;
 //   } catch (error) {
-//     console.error("SOL balance error:", error.message);
 //     return "0.00 SOL";
 //   }
 // }
-
 // // ============================================
-// // HEALTH CHECK ENDPOINT (CRITICAL FOR VERCEL)
-// // ============================================
-// app.get("/api/health", (req, res) => {
-//   res.json({
-//     status: "ok",
-//     time: new Date().toISOString(),
-//     environment: process.env.VERCEL ? "vercel" : "local",
-//   });
-// });
-
-// // ============================================
-// // API ENDPOINTS
+// // ADD THESE MISSING ENDPOINTS to your server.js
 // // ============================================
 
-// // 1. CREATE NEW WALLET
-// app.post("/api/wallet/new", async (req, res) => {
-//   try {
-//     console.log("📝 Creating new wallet...");
-//     const mnemonic = bip39.generateMnemonic();
-//     const seed = await bip39.mnemonicToSeed(mnemonic);
-
-//     const ethWallet = deriveEthereumWallet(seed);
-//     const btcWallet = deriveBitcoinWallet(seed);
-//     const solWallet = deriveSolanaWallet(seed);
-
-//     const ethBalance = await getEthBalance(ethWallet.address);
-//     const solBalance = await getSolBalance(solWallet.address);
-
-//     const walletData = {
-//       id: Date.now().toString(),
-//       mnemonic,
-//       ethereum: {
-//         ...ethWallet,
-//         balance: ethBalance,
-//         usdValue: "$0.00",
-//       },
-//       bitcoin: {
-//         ...btcWallet,
-//         balance: "0.00000000 BTC",
-//         usdValue: "$0.00",
-//       },
-//       solana: {
-//         ...solWallet,
-//         balance: solBalance,
-//         usdValue: "$0.00",
-//       },
-//       createdAt: new Date().toISOString(),
-//     };
-
-//     savedWallets.push(walletData);
-//     console.log(`✅ Wallet created: ${ethWallet.address}`);
-//     res.json({ success: true, wallet: walletData });
-//   } catch (error) {
-//     console.error("Create wallet error:", error);
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
-
-// // 2. IMPORT WALLET
-// app.post("/api/wallet/import", async (req, res) => {
-//   try {
-//     const { mnemonic } = req.body;
-//     console.log("📥 Importing wallet...");
-
-//     if (!mnemonic) {
-//       return res.status(400).json({
-//         success: false,
-//         error: "Mnemonic phrase is required",
-//       });
-//     }
-
-//     if (!bip39.validateMnemonic(mnemonic)) {
-//       return res.status(400).json({
-//         success: false,
-//         error: "Invalid mnemonic phrase. Please check your 12 words.",
-//       });
-//     }
-
-//     const seed = await bip39.mnemonicToSeed(mnemonic);
-//     const ethWallet = deriveEthereumWallet(seed);
-//     const btcWallet = deriveBitcoinWallet(seed);
-//     const solWallet = deriveSolanaWallet(seed);
-
-//     const ethBalance = await getEthBalance(ethWallet.address);
-//     const solBalance = await getSolBalance(solWallet.address);
-
-//     const walletData = {
-//       id: Date.now().toString(),
-//       mnemonic,
-//       ethereum: {
-//         ...ethWallet,
-//         balance: ethBalance,
-//         usdValue: "$0.00",
-//       },
-//       bitcoin: {
-//         ...btcWallet,
-//         balance: "0.00000000 BTC",
-//         usdValue: "$0.00",
-//       },
-//       solana: {
-//         ...solWallet,
-//         balance: solBalance,
-//         usdValue: "$0.00",
-//       },
-//       createdAt: new Date().toISOString(),
-//     };
-
-//     savedWallets.push(walletData);
-//     console.log(`✅ Wallet imported: ${ethWallet.address}`);
-//     res.json({ success: true, wallet: walletData });
-//   } catch (error) {
-//     console.error("Import wallet error:", error);
-//     res.status(500).json({
-//       success: false,
-//       error: error.message,
-//     });
-//   }
-// });
-
-// // 3. SEND ETHEREUM
-// app.post("/api/send/ethereum", async (req, res) => {
-//   try {
-//     const { privateKey, to, amount } = req.body;
-//     if (!sirEth || !sirEth.sendTransactionWithProvider) {
-//       throw new Error("Ethereum send function not available");
-//     }
-//     console.log(`📡 Sending ${amount} ETH to ${to}...`);
-//     const txHash = await sirEth.sendTransactionWithProvider(
-//       privateKey,
-//       to,
-//       amount,
-//     );
-//     res.json({
-//       success: true,
-//       txHash,
-//       explorerUrl: `https://sepolia.etherscan.io/tx/${txHash}`,
-//       message: "✅ Transaction sent successfully!",
-//     });
-//   } catch (error) {
-//     console.error("ETH send error:", error);
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
-
-// // 4. SEND SOLANA
-// app.post("/api/send/solana", async (req, res) => {
-//   try {
-//     const { privateKey, to, amount } = req.body;
-//     if (!sirSol || !sirSol.sendSolanaTransactionRaw) {
-//       throw new Error("Solana send function not available");
-//     }
-//     console.log(`📡 Sending ${amount} SOL to ${to}...`);
-//     const signature = await sirSol.sendSolanaTransactionRaw(
-//       privateKey,
-//       to,
-//       parseFloat(amount),
-//     );
-//     res.json({
-//       success: true,
-//       txHash: signature,
-//       explorerUrl: `https://solscan.io/tx/${signature}`,
-//       message: "✅ Transaction sent successfully!",
-//     });
-//   } catch (error) {
-//     console.error("SOL send error:", error);
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
-
-// // 5. TEST SIR'S ETHEREUM FUNCTION
-// app.post("/api/test/sir-ethereum", async (req, res) => {
-//   try {
-//     if (!sirEth || !sirEth.testSirTransaction) {
-//       throw new Error("Sir's test function not available");
-//     }
-//     console.log("🧪 Testing Sir's Ethereum function...");
-//     const txHash = await sirEth.testSirTransaction();
-//     res.json({
-//       success: true,
-//       txHash,
-//       message: "✅ Sir's test transaction sent!",
-//     });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
-
-// // 6. TEST SIR'S SOLANA FUNCTION
-// app.post("/api/test/sir-solana", async (req, res) => {
-//   try {
-//     if (!sirSol || !sirSol.testSirSolanaTransaction) {
-//       throw new Error("Sir's test function not available");
-//     }
-//     console.log("🧪 Testing Sir's Solana function...");
-//     const signature = await sirSol.testSirSolanaTransaction();
-//     res.json({
-//       success: true,
-//       txHash: signature,
-//       message: "✅ Sir's test transaction sent!",
-//     });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
-
-// // 7. GET ETHEREUM HISTORY
+// // GET ETHEREUM HISTORY
 // app.post("/api/history/ethereum", async (req, res) => {
 //   try {
 //     const { address } = req.body;
-
-//     console.log(`🔍 Fetching ETH history for: ${address}`);
 
 //     if (!address) {
 //       return res.json({ success: true, transactions: [] });
@@ -1061,19 +1414,12 @@
 //     }
 
 //     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
-
-//     // Get current block and balance
 //     const currentBlock = await provider.getBlockNumber();
 //     const balance = await provider.getBalance(address);
-//     const balanceInEth = parseFloat(ethers.formatEther(balance));
-
-//     console.log(`   Current block: ${currentBlock}`);
-//     console.log(`   Balance: ${balanceInEth} ETH`);
-
 //     const transactions = [];
 
-//     // Check last 20 blocks for transactions
-//     for (let i = 0; i < 20; i++) {
+//     // Check last 10 blocks
+//     for (let i = 0; i < 10; i++) {
 //       const blockNumber = currentBlock - i;
 //       if (blockNumber < 0) break;
 
@@ -1084,7 +1430,6 @@
 //         for (const tx of block.transactions) {
 //           if (typeof tx === "string") continue;
 
-//           // Check if this transaction involves our address
 //           const isFrom = tx.from?.toLowerCase() === address.toLowerCase();
 //           const isTo = tx.to?.toLowerCase() === address.toLowerCase();
 
@@ -1094,13 +1439,10 @@
 //               from: tx.from,
 //               to: tx.to,
 //               value: ethers.formatEther(tx.value || "0"),
-//               blockNumber: block.number,
-//               timestamp: block.timestamp,
 //               date: block.timestamp
 //                 ? new Date(block.timestamp * 1000).toISOString()
 //                 : new Date().toISOString(),
 //               type: isFrom ? "sent" : "received",
-//               status: "confirmed",
 //             });
 //           }
 //         }
@@ -1109,42 +1451,20 @@
 //       }
 //     }
 
-//     // If balance > 0 but no transactions found, show the balance
-//     if (transactions.length === 0 && balanceInEth > 0) {
-//       console.log(`✅ Balance > 0 - adding as received transaction`);
-//       transactions.push({
-//         hash: "view-on-etherscan",
-//         from: "💰 Faucet / Deposit",
-//         to: address,
-//         value: balanceInEth.toFixed(4),
-//         blockNumber: "N/A",
-//         timestamp: Date.now() / 1000,
-//         date: new Date().toISOString(),
-//         type: "received",
-//         status: "confirmed",
-//       });
-//     }
-
-//     // Sort by newest first
-//     transactions.sort((a, b) => b.timestamp - a.timestamp);
-
-//     res.json({
-//       success: true,
-//       transactions: transactions.slice(0, 20),
-//     });
+//     res.json({ success: true, transactions });
 //   } catch (error) {
-//     console.error("ETH history error:", error);
 //     res.json({ success: true, transactions: [] });
 //   }
 // });
 
-// // 8. GET SOLANA HISTORY
+// // GET SOLANA HISTORY
 // app.post("/api/history/solana", async (req, res) => {
 //   try {
 //     const { address } = req.body;
-//     if (!address) return res.json({ success: true, transactions: [] });
-//     if (!sirSol || !sirSol.GETBLOCK_SOL_URL)
+
+//     if (!address || !sirSol || !sirSol.GETBLOCK_SOL_URL) {
 //       return res.json({ success: true, transactions: [] });
+//     }
 
 //     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
 //     const pubKey = new PublicKey(address);
@@ -1159,132 +1479,118 @@
 //         date: sig.blockTime
 //           ? new Date(sig.blockTime * 1000).toISOString()
 //           : new Date().toISOString(),
-//         status: "success",
 //       });
 //     }
+
 //     res.json({ success: true, transactions });
 //   } catch (error) {
-//     console.error("SOL history error:", error);
 //     res.json({ success: true, transactions: [] });
 //   }
 // });
-
-// // 9. GET BALANCE
-// app.post("/api/balance", async (req, res) => {
-//   try {
-//     const { address, blockchain } = req.body;
-//     if (blockchain === "ethereum") {
-//       const balance = await getEthBalance(address);
-//       res.json({ success: true, balance });
-//     } else if (blockchain === "solana") {
-//       const balance = await getSolBalance(address);
-//       res.json({ success: true, balance });
-//     } else {
-//       res.json({ success: true, balance: "0.00" });
-//     }
-//   } catch (error) {
-//     res.json({ success: true, balance: "0.00" });
-//   }
-// });
-
-// // 10. NETWORK CHECK ENDPOINTS
-// app.get("/api/check-ethereum-network", async (req, res) => {
-//   try {
-//     if (!sirEth || !sirEth.GETBLOCK_ETH_URL) {
-//       return res.json({ success: false, error: "No URL configured" });
-//     }
-
-//     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
-//     const network = await provider.getNetwork();
-//     const blockNumber = await provider.getBlockNumber();
-//     const chainId = network.chainId.toString();
-
-//     let networkName = "Unknown";
-//     if (chainId === "1") networkName = "Ethereum Mainnet";
-//     else if (chainId === "11155111") networkName = "Sepolia Testnet";
-//     else if (chainId === "5") networkName = "Goerli Testnet";
-
-//     res.json({
-//       success: true,
-//       network_name: networkName,
-//       chain_id: chainId,
-//       block_number: blockNumber,
-//     });
-//   } catch (error) {
-//     res.json({ success: false, error: error.message });
-//   }
-// });
-
-// app.get("/api/check-solana-network", async (req, res) => {
-//   try {
-//     if (!sirSol || !sirSol.GETBLOCK_SOL_URL) {
-//       return res.json({ success: false, error: "No URL configured" });
-//     }
-
-//     const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
-//     const genesisHash = await connection.getGenesisHash();
-//     const version = await connection.getVersion();
-
-//     let networkName = "Unknown";
-//     if (genesisHash === "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d") {
-//       networkName = "Solana Mainnet";
-//     } else if (genesisHash === "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG") {
-//       networkName = "Solana Devnet";
-//     }
-
-//     res.json({
-//       success: true,
-//       network: networkName,
-//       genesis_hash: genesisHash,
-//       version: version,
-//     });
-//   } catch (error) {
-//     res.json({ success: false, error: error.message });
-//   }
-// });
-
-// // 11. GET STATUS
-// app.get("/api/status", (req, res) => {
+// // ============================================
+// // SIMPLE TEST ENDPOINT - ALWAYS WORKS
+// // ============================================
+// app.get("/api/test", (req, res) => {
 //   res.json({
 //     success: true,
-//     message: "🚀 NovaCrypto Wallet API is running!",
-//     environment: process.env.VERCEL ? "vercel" : "local",
-//     endpoints: [
-//       "POST /api/wallet/new",
-//       "POST /api/wallet/import",
-//       "POST /api/send/ethereum",
-//       "POST /api/send/solana",
-//       "POST /api/history/ethereum",
-//       "POST /api/history/solana",
-//       "POST /api/balance",
-//       "GET /api/status",
-//       "GET /api/health",
-//     ],
+//     message: "API is working!",
+//     time: new Date().toISOString(),
 //   });
 // });
 
-// // 12. GET ALL WALLETS
-// app.get("/api/wallets", (req, res) => {
-//   res.json({ success: true, wallets: savedWallets });
+// // ============================================
+// // API ENDPOINTS
+// // ============================================
+
+// // CREATE WALLET
+// app.post("/api/wallet/new", async (req, res) => {
+//   try {
+//     const mnemonic = bip39.generateMnemonic();
+//     const seed = await bip39.mnemonicToSeed(mnemonic);
+//     const ethWallet = deriveEthereumWallet(seed);
+//     const solWallet = deriveSolanaWallet(seed);
+
+//     const walletData = {
+//       id: Date.now().toString(),
+//       mnemonic,
+//       ethereum: {
+//         ...ethWallet,
+//         balance: await getEthBalance(ethWallet.address),
+//       },
+//       solana: {
+//         ...solWallet,
+//         balance: await getSolBalance(solWallet.address),
+//       },
+//       createdAt: new Date().toISOString(),
+//     };
+
+//     savedWallets.push(walletData);
+//     res.json({ success: true, wallet: walletData });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
 // });
 
-// // 13. SERVE FRONTEND
+// // IMPORT WALLET
+// app.post("/api/wallet/import", async (req, res) => {
+//   try {
+//     const { mnemonic } = req.body;
+//     if (!bip39.validateMnemonic(mnemonic)) {
+//       return res
+//         .status(400)
+//         .json({ success: false, error: "Invalid mnemonic" });
+//     }
+
+//     const seed = await bip39.mnemonicToSeed(mnemonic);
+//     const ethWallet = deriveEthereumWallet(seed);
+//     const solWallet = deriveSolanaWallet(seed);
+
+//     const walletData = {
+//       id: Date.now().toString(),
+//       mnemonic,
+//       ethereum: {
+//         ...ethWallet,
+//         balance: await getEthBalance(ethWallet.address),
+//       },
+//       solana: {
+//         ...solWallet,
+//         balance: await getSolBalance(solWallet.address),
+//       },
+//       createdAt: new Date().toISOString(),
+//     };
+
+//     savedWallets.push(walletData);
+//     res.json({ success: true, wallet: walletData });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// });
+
+// // STATUS ENDPOINT
+// app.get("/api/status", (req, res) => {
+//   res.json({
+//     success: true,
+//     message: "API is running",
+//     environment: process.env.VERCEL ? "vercel" : "local",
+//   });
+// });
+
+// // SERVE FRONTEND
 // app.get("/", (req, res) => {
 //   res.sendFile(path.join(__dirname, "public", "index.html"));
 // });
 
 // // ============================================
-// // VERCEL EXPORT - CRITICAL FOR DEPLOYMENT
+// // CRITICAL - THIS MAKES IT WORK ON VERCEL
 // // ============================================
+// module.exports = app;
 
-// // Only listen when running directly (not on Vercel)
-// // ✅ CORRECT for Vercel
-// module.exports = app; // ← MUST HAVE THIS!
-
-// // Only listen locally
-// if (require.main === module) {
+// // Local development only
+// if (require.main === module && !process.env.VERCEL) {
 //   const PORT = process.env.PORT || 3000;
-//   app.listen(PORT, () => console.log(`Local server: ${PORT}`));
+//   app.listen(PORT, () => {
+//     console.log(`🚀 Server running at http://localhost:${PORT}`);
+//   });
 // }
 const express = require("express");
 const cors = require("cors");
@@ -1396,14 +1702,170 @@ async function getSolBalance(address) {
     return "0.00 SOL";
   }
 }
-// ============================================
-// ADD THESE MISSING ENDPOINTS to your server.js
-// ============================================
 
+// ============================================
+// HEALTH CHECK ENDPOINT
+// ============================================
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    time: new Date().toISOString(),
+    environment: process.env.VERCEL ? "vercel" : "local",
+  });
+});
+
+// ============================================
+// TEST ENDPOINT
+// ============================================
+app.get("/api/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "API is working!",
+    time: new Date().toISOString(),
+  });
+});
+
+// ============================================
+// CREATE WALLET
+// ============================================
+app.post("/api/wallet/new", async (req, res) => {
+  try {
+    console.log("📝 Creating new wallet...");
+    const mnemonic = bip39.generateMnemonic();
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const ethWallet = deriveEthereumWallet(seed);
+    const solWallet = deriveSolanaWallet(seed);
+
+    const walletData = {
+      id: Date.now().toString(),
+      mnemonic,
+      ethereum: {
+        ...ethWallet,
+        balance: await getEthBalance(ethWallet.address),
+      },
+      solana: {
+        ...solWallet,
+        balance: await getSolBalance(solWallet.address),
+      },
+      createdAt: new Date().toISOString(),
+    };
+
+    savedWallets.push(walletData);
+    res.json({ success: true, wallet: walletData });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
+// IMPORT WALLET
+// ============================================
+app.post("/api/wallet/import", async (req, res) => {
+  try {
+    const { mnemonic } = req.body;
+    console.log("📥 Importing wallet...");
+
+    if (!mnemonic) {
+      return res.status(400).json({
+        success: false,
+        error: "Mnemonic phrase is required",
+      });
+    }
+
+    if (!bip39.validateMnemonic(mnemonic)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid mnemonic phrase. Please check your 12 words.",
+      });
+    }
+
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const ethWallet = deriveEthereumWallet(seed);
+    const solWallet = deriveSolanaWallet(seed);
+
+    const walletData = {
+      id: Date.now().toString(),
+      mnemonic,
+      ethereum: {
+        ...ethWallet,
+        balance: await getEthBalance(ethWallet.address),
+      },
+      solana: {
+        ...solWallet,
+        balance: await getSolBalance(solWallet.address),
+      },
+      createdAt: new Date().toISOString(),
+    };
+
+    savedWallets.push(walletData);
+    res.json({ success: true, wallet: walletData });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
+// SEND ETHEREUM
+// ============================================
+app.post("/api/send/ethereum", async (req, res) => {
+  try {
+    const { privateKey, to, amount } = req.body;
+    if (!sirEth || !sirEth.sendTransactionWithProvider) {
+      throw new Error("Ethereum send function not available");
+    }
+    console.log(`📡 Sending ${amount} ETH to ${to}...`);
+    const txHash = await sirEth.sendTransactionWithProvider(
+      privateKey,
+      to,
+      amount,
+    );
+    res.json({
+      success: true,
+      txHash,
+      explorerUrl: `https://sepolia.etherscan.io/tx/${txHash}`,
+      message: "✅ Transaction sent successfully!",
+    });
+  } catch (error) {
+    console.error("ETH send error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
+// SEND SOLANA
+// ============================================
+app.post("/api/send/solana", async (req, res) => {
+  try {
+    const { privateKey, to, amount } = req.body;
+    if (!sirSol || !sirSol.sendSolanaTransactionRaw) {
+      throw new Error("Solana send function not available");
+    }
+    console.log(`📡 Sending ${amount} SOL to ${to}...`);
+    const signature = await sirSol.sendSolanaTransactionRaw(
+      privateKey,
+      to,
+      parseFloat(amount),
+    );
+    res.json({
+      success: true,
+      txHash: signature,
+      explorerUrl: `https://solscan.io/tx/${signature}`,
+      message: "✅ Transaction sent successfully!",
+    });
+  } catch (error) {
+    console.error("SOL send error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
 // GET ETHEREUM HISTORY
+// ============================================
 app.post("/api/history/ethereum", async (req, res) => {
   try {
     const { address } = req.body;
+
+    console.log(`🔍 Fetching ETH history for: ${address}`);
 
     if (!address) {
       return res.json({ success: true, transactions: [] });
@@ -1416,10 +1878,11 @@ app.post("/api/history/ethereum", async (req, res) => {
     const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
     const currentBlock = await provider.getBlockNumber();
     const balance = await provider.getBalance(address);
+    const balanceInEth = parseFloat(ethers.formatEther(balance));
     const transactions = [];
 
-    // Check last 10 blocks
-    for (let i = 0; i < 10; i++) {
+    // Check last 20 blocks for transactions
+    for (let i = 0; i < 20; i++) {
       const blockNumber = currentBlock - i;
       if (blockNumber < 0) break;
 
@@ -1451,16 +1914,39 @@ app.post("/api/history/ethereum", async (req, res) => {
       }
     }
 
-    res.json({ success: true, transactions });
+    // If balance > 0 but no transactions found, show the balance
+    if (transactions.length === 0 && balanceInEth > 0) {
+      transactions.push({
+        hash: "view-on-etherscan",
+        from: "💰 Faucet / Deposit",
+        to: address,
+        value: balanceInEth.toFixed(4),
+        date: new Date().toISOString(),
+        type: "received",
+      });
+    }
+
+    // Sort by newest first
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    res.json({
+      success: true,
+      transactions: transactions.slice(0, 20),
+    });
   } catch (error) {
+    console.error("ETH history error:", error);
     res.json({ success: true, transactions: [] });
   }
 });
 
+// ============================================
 // GET SOLANA HISTORY
+// ============================================
 app.post("/api/history/solana", async (req, res) => {
   try {
     const { address } = req.body;
+
+    console.log(`🔍 Fetching SOL history for: ${address}`);
 
     if (!address || !sirSol || !sirSol.GETBLOCK_SOL_URL) {
       return res.json({ success: true, transactions: [] });
@@ -1484,111 +1970,135 @@ app.post("/api/history/solana", async (req, res) => {
 
     res.json({ success: true, transactions });
   } catch (error) {
+    console.error("SOL history error:", error);
     res.json({ success: true, transactions: [] });
   }
 });
-// ============================================
-// SIMPLE TEST ENDPOINT - ALWAYS WORKS
-// ============================================
-app.get("/api/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "API is working!",
-    time: new Date().toISOString(),
-  });
-});
 
 // ============================================
-// API ENDPOINTS
+// GET BALANCE
 // ============================================
-
-// CREATE WALLET
-app.post("/api/wallet/new", async (req, res) => {
+app.post("/api/balance", async (req, res) => {
   try {
-    const mnemonic = bip39.generateMnemonic();
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    const ethWallet = deriveEthereumWallet(seed);
-    const solWallet = deriveSolanaWallet(seed);
-
-    const walletData = {
-      id: Date.now().toString(),
-      mnemonic,
-      ethereum: {
-        ...ethWallet,
-        balance: await getEthBalance(ethWallet.address),
-      },
-      solana: {
-        ...solWallet,
-        balance: await getSolBalance(solWallet.address),
-      },
-      createdAt: new Date().toISOString(),
-    };
-
-    savedWallets.push(walletData);
-    res.json({ success: true, wallet: walletData });
+    const { address, blockchain } = req.body;
+    if (blockchain === "ethereum") {
+      const balance = await getEthBalance(address);
+      res.json({ success: true, balance });
+    } else if (blockchain === "solana") {
+      const balance = await getSolBalance(address);
+      res.json({ success: true, balance });
+    } else {
+      res.json({ success: true, balance: "0.00" });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.json({ success: true, balance: "0.00" });
   }
 });
 
-// IMPORT WALLET
-app.post("/api/wallet/import", async (req, res) => {
+// ============================================
+// NETWORK CHECK ENDPOINTS
+// ============================================
+app.get("/api/check-ethereum-network", async (req, res) => {
   try {
-    const { mnemonic } = req.body;
-    if (!bip39.validateMnemonic(mnemonic)) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid mnemonic" });
+    if (!sirEth || !sirEth.GETBLOCK_ETH_URL) {
+      return res.json({ success: false, error: "No URL configured" });
     }
 
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    const ethWallet = deriveEthereumWallet(seed);
-    const solWallet = deriveSolanaWallet(seed);
+    const provider = new ethers.JsonRpcProvider(sirEth.GETBLOCK_ETH_URL);
+    const network = await provider.getNetwork();
+    const blockNumber = await provider.getBlockNumber();
+    const chainId = network.chainId.toString();
 
-    const walletData = {
-      id: Date.now().toString(),
-      mnemonic,
-      ethereum: {
-        ...ethWallet,
-        balance: await getEthBalance(ethWallet.address),
-      },
-      solana: {
-        ...solWallet,
-        balance: await getSolBalance(solWallet.address),
-      },
-      createdAt: new Date().toISOString(),
-    };
+    let networkName = "Unknown";
+    if (chainId === "1") networkName = "Ethereum Mainnet";
+    else if (chainId === "11155111") networkName = "Sepolia Testnet";
+    else if (chainId === "5") networkName = "Goerli Testnet";
 
-    savedWallets.push(walletData);
-    res.json({ success: true, wallet: walletData });
+    res.json({
+      success: true,
+      network_name: networkName,
+      chain_id: chainId,
+      block_number: blockNumber,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.json({ success: false, error: error.message });
   }
 });
 
-// STATUS ENDPOINT
+app.get("/api/check-solana-network", async (req, res) => {
+  try {
+    if (!sirSol || !sirSol.GETBLOCK_SOL_URL) {
+      return res.json({ success: false, error: "No URL configured" });
+    }
+
+    const connection = new Connection(sirSol.GETBLOCK_SOL_URL);
+    const genesisHash = await connection.getGenesisHash();
+    const version = await connection.getVersion();
+
+    let networkName = "Unknown";
+    if (genesisHash === "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d") {
+      networkName = "Solana Mainnet";
+    } else if (genesisHash === "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG") {
+      networkName = "Solana Devnet";
+    }
+
+    res.json({
+      success: true,
+      network: networkName,
+      genesis_hash: genesisHash,
+      version: version,
+    });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
+// GET STATUS
+// ============================================
 app.get("/api/status", (req, res) => {
   res.json({
     success: true,
-    message: "API is running",
+    message: "🚀 NovaCrypto Wallet API is running!",
     environment: process.env.VERCEL ? "vercel" : "local",
+    endpoints: [
+      "POST /api/wallet/new",
+      "POST /api/wallet/import",
+      "POST /api/send/ethereum",
+      "POST /api/send/solana",
+      "POST /api/history/ethereum",
+      "POST /api/history/solana",
+      "POST /api/balance",
+      "GET /api/status",
+      "GET /api/health",
+      "GET /api/test",
+    ],
   });
 });
 
+// ============================================
+// GET ALL WALLETS
+// ============================================
+app.get("/api/wallets", (req, res) => {
+  res.json({ success: true, wallets: savedWallets });
+});
+
+// ============================================
 // SERVE FRONTEND
+// ============================================
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // ============================================
-// CRITICAL - THIS MAKES IT WORK ON VERCEL
+// EXPORT FOR VERCEL/RENDER
 // ============================================
 module.exports = app;
 
 // Local development only
 if (require.main === module && !process.env.VERCEL) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
   });
 }
