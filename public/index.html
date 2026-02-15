@@ -850,7 +850,7 @@
       // Check status
       async function checkStatus() {
         try {
-          const response = await fetch("http://localhost:3000/api/status");
+          const response = await fetch("/api/status");
           const data = await response.json();
           document.getElementById("api-status").innerHTML =
             `<span style="color: var(--success);">✅ Connected • ${data.endpoints?.length || 9} endpoints active</span>`;
@@ -863,7 +863,7 @@
       // Create wallet
       async function createWallet() {
         try {
-          const response = await fetch("http://localhost:3000/api/wallet/new", {
+          const response = await fetch("/api/wallet/new", {
             method: "POST",
           });
           const data = await response.json();
@@ -909,18 +909,15 @@
         importBtn.disabled = true;
 
         try {
-          const response = await fetch(
-            "http://localhost:3000/api/wallet/import",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                mnemonic,
-              }),
+          const response = await fetch("/api/wallet/import", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+            body: JSON.stringify({
+              mnemonic,
+            }),
+          });
 
           const data = await response.json();
 
@@ -987,20 +984,17 @@
           return;
 
         try {
-          const response = await fetch(
-            "http://localhost:3000/api/send/ethereum",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                privateKey: currentWallet.ethereum.privateKey,
-                to: toAddress,
-                amount: amount,
-              }),
+          const response = await fetch("/api/send/ethereum", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+            body: JSON.stringify({
+              privateKey: currentWallet.ethereum.privateKey,
+              to: toAddress,
+              amount: amount,
+            }),
+          });
 
           const data = await response.json();
 
@@ -1038,20 +1032,17 @@
           return;
 
         try {
-          const response = await fetch(
-            "http://localhost:3000/api/send/solana",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                privateKey: currentWallet.solana.privateKeyBase58,
-                to: toAddress,
-                amount: amount,
-              }),
+          const response = await fetch("/api/send/solana", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+            body: JSON.stringify({
+              privateKey: currentWallet.solana.privateKeyBase58,
+              to: toAddress,
+              amount: amount,
+            }),
+          });
 
           const data = await response.json();
 
@@ -1078,18 +1069,15 @@
           '<div class="loading">Loading Ethereum transactions...</div>';
 
         try {
-          const response = await fetch(
-            "http://localhost:3000/api/history/ethereum",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                address,
-              }),
+          const response = await fetch("/api/history/ethereum", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+            body: JSON.stringify({
+              address,
+            }),
+          });
 
           const data = await response.json();
 
@@ -1128,18 +1116,15 @@
           '<div class="loading">Loading Solana transactions...</div>';
 
         try {
-          const response = await fetch(
-            "http://localhost:3000/api/history/solana",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                address,
-              }),
+          const response = await fetch("/api/history/solana", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+            body: JSON.stringify({
+              address,
+            }),
+          });
 
           const data = await response.json();
 
